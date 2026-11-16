@@ -1,0 +1,98 @@
+import { getOrCreateCart } from './cart.controller.js'
+import Order from '../models/Order.js'
+import Product from '../models/Product.js'
+import { ApiError } from '../utils/ApiError.js'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { generateOrderNumber } from '../utils/referenceNumbers.js'
+
+export const createOrder = asyncHandler(async (req, res) => {
+  if (req.user && req.user.accountType !== 'retail') {
+    throw ApiError.forbidden(
+      'B2B accounts cannot place retail orders. Use the custom quote wizard instead.'
+    )
+  }
+
+  const shipping = req.validated
+
+  const cart = await getOrCreateCart(req)
+  await cart.populate('items.productId')
+  if (!cart || cart.items.length === 0) {
+    throw ApiError.badRequest('Your cart is empty.')
+  }
+
+  const items = cart.items
+    .filter((item) => item.productId)
+    .map((item) => ({
+      productId: item.productId._id,
+      nameEn: item.productId.nameEn,
+      nameEs: item.productId.nameEs,
+      quantity: item.quantity,
+      unitPrice: item.productId.price,
+    }))
+  if (items.length === 0) {
+    throw ApiError.badRequest('Your cart has no available products.')
+  }
+
+  const totalAmount = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+
+  const decrementedItems = []
+  let order
+  try {
+    for (const item of items) {
+      const product = await Product.findOneAndUpdate(
+        { _id: item.productId, 'inventory.stockQuantity': { $gte: item.quantity } },
+        {
+          $inc: { 'inventory.stockQuantity': -item.quantity },
+          $set: { 'inventory.updatedAt': new Date() },
+        },
+        { new: false }
+      )
+      if (!product) {
+        throw ApiError.badRequest(`Insufficient stock for ${item.nameEn}.`)
+      }
+      decrementedItems.push({ productId: item.productId, quantity: item.quantity })
+    }
+
+    order = await Order.create({
+      userId: req.user?._id || null,
+      orderNumber: generateOrderNumber(),
+      totalAmount,
+      items,
+      shippingAddress: {
+        firstName: shipping.firstName,
+        lastName: shipping.lastName,
+        addressLine1: shipping.addressLine1,
+        city: shipping.city,
+        state: shipping.state,
+        zipCode: shipping.zipCode,
+        country: 'US',
+        phone: shipping.phone,
+        email: shipping.email,
+      },
+    })
+  } catch (error) {
+    await Promise.all(
+      decrementedItems.map(({ productId, quantity }) =>
+        Product.updateOne(
+          { _id: productId },
+          {
+            $inc: { 'inventory.stockQuantity': quantity },
+            $set: { 'inventory.updatedAt': new Date() },
+          }
+        )
+      )
+    )
+    throw error
+  }
+
+  cart.items = []
+  cart.status = 'converted'
+  await cart.save()
+
+  res.status(201).json({ order })
+})
+
+export const listMyOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({ userId: req.user._id }).sort({ placedAt: -1 })
+  res.json({ orders })
+})
