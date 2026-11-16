@@ -1,0 +1,105 @@
+PASS            NAV-01                       h1="Single-Origin Chocolate, Crafted With Intention", h2 count=3, page errors=0
+PASS            NAV-02                       Shop->/shop h1="Shop"; Wholesale->/b2b h1="Custom Chocolate for Business"; Build a Sampler->/sampler h1="Build
+PASS            NAV-03                       /:ok, /shop:ok, /product/1:ok, /cart:ok, /checkout:ok, /sampler:ok, /b2b:ok, /b2b/custom-order:ok, /contact:ok
+PASS            NAV-04                       /product/1 -> /shop|Shop -> / -> /shop|Shop
+PASS            NAV-05                       /does-not-exist h1="Page Not Found"; /product/999 h1="Page Not Found"; home link=1
+PASS            NAV-06                       6 footer links: /shop:ok, /b2b:ok, /sampler:ok, /about:ok, /contact:ok, /contact:ok, logo->/
+PASS            NAV-07                       opened=True, navigated&closed=True, escape closes=True
+PASS            CAT-01                       9 product cards
+PASS            CAT-02                       url=/shop?search=Ecuador, results=1 ['Ecuador Arriba Nacional 85%']
+PASS            CAT-03                       cards=0, empty message=1
+PASS            CAT-04                       truffle tile -> /shop?category=truffle, 3 cards; seasonal -> 2 cards
+PASS            CAT-05                       Peru=2, Peru+Ghana=3
+PASS            CAT-06                       label="Cacao %: 70%+", cards=4
+PASS            CAT-07                       cards=4, prices=[12.5, 11.0, 13.0, 10.5]
+PASS            CAT-08                       asc=[10.5, 11.0, 12.5, 13.0, 13.75, 14.5, 24.0, 24.0, 26.0]; desc=[26.0, 24.0, 24.0, 14.5, 13.75, 13.0, 12.5, 
+PASS            CAT-09                       empty state=True; after clear=9 cards, url=/shop
+PASS            CAT-10                       opened=True, panel width=288px, closed=True, results=1
+PASS            PRD-01                       h1="Madagascar Single-Origin 72%", meta="MADAGASCAR · 72% CACAO · SKU SC-BAR-001", related=3
+PASS            PRD-02                       floor=1, qty=3, badge=3, subtotal=41.25
+PASS            CRT-01                       drawer visible=True, badge=1, subtotal=12.5
+PASS            CRT-02                       lines=1; after re-add=('2', '2', 25.0); after +=('3', '3', 37.5); after 3x- =('1', '1', 12.5)
+PASS            CRT-03                       empty msg=True, badge=0, checkout link=0
+PASS            CRT-04                       line totals=[12.5, 48.0], subtotal=60.5
+PASS            CRT-05                       X closes=True, continue closes=True, url=/checkout
+PASS            CRT-07                       message=1, link=1
+PASS            CHK-01                       Place Order disabled=True
+PASS            CHK-02                       errors=11, aria-invalid=11, url=/checkout
+PASS            CHK-03                       "12345"->rejected; "J0hn"->rejected; "José"->accepted; "Mary-Jane"->accepted; "O'Brien"->accepted; "Nguyễn Văn
+PASS            CHK-05                       "TX"->accepted; "Nuevo León"->accepted; "N.S.W."->accepted; "123"->rejected
+PASS            CHK-07                       "+44 20 7946 0958"->accepted; "(817) 272-2011"->accepted; "+52 55 1234 5678"->accepted; "abc"->rejected; "123"
+PASS            CHK-08                       "a@b"->rejected; "a@@b.com"->rejected; "test@example"->rejected; "no-at.example.com"->rejected; "test.buyer@ex
+PASS            CHK-10                       "2025-10"->rejected; "2026-10"->accepted; "2027-01"->accepted
+PASS            CHK-11                       "12"->rejected; "123"->accepted; "1234"->accepted; "12a"->rejected
+PASS            CHK-12                       before=('Email is required.', 'true', 'checkout-email-error'); after=(None, 'false')
+PASS            CHK-15                       url=/order-confirmation, ref=SC-728034, badge=0
+EXPECTED FAIL (Phase 3) CHK-16                       references: SC-417208 -> SC-850314 -> SC-157472
+EXPECTED FAIL (Phase 3) CHK-17                       page shows: "Thank You for Your Order!
+
+A confirmation has been sent to your email. Your chocolates are"
+PASS            AUT-01                       blocked empty=True, modal closed=True, account link="test.buyer"
+PASS            AUT-02                       pressed="Business / Wholesale", account type="Business / Wholesale"
+PASS            AUT-03                       url=/
+PASS            AUT-04                       notice=True, orders=2
+PASS            AUT-05                       empty errors=6, numeric city error=1, saved=1, after reload+login=1, removed=True
+PASS            AUT-07                       logged out after Log Out=True; logged out after reload=True (mock, in-memory auth)
+PASS            SMP-01                       after select=('3 / 9 pieces selected', 50.25); after deselect=('2 / 9 pieces selected', 36.5); aria-pressed=tr
+PASS            SMP-02                       disabled=True, prompt=1
+PASS            SMP-03                       sampler total=47.0, cart lines=3, subtotal=47.0, badge=3
+PASS            SMP-04                       state=('9 / 9 pieces selected', 149.25). Note: each product is selectable once and the catalog has exactly 9 p
+PASS            B2B-01                       services=4, url=/b2b/custom-order
+EXPECTED FAIL (Phase 3) B2B-09                       ref None -> None; direct visit shows reference=True
+PASS            CON-01                       empty -> ['Name is required.', 'Email is required.', 'Message is required.']; whitespace -> ['Name is required
+PASS            CON-02                       errors=['Name can only contain letters, spaces, hyphens, and apostrophes.', 'Enter a valid email address.', 'M
+PASS            CON-03                       success shown=True
+PASS            I18N-01                      lang=es, nav=['Tienda', 'Mayoreo', 'Crea tu Muestrario', 'Contacto', 'Nosotros'], h1="Chocolate de Origen Únic
+PASS            RSP-home-mobile375           viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-shop-mobile375           viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-product-mobile375        viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-checkout-mobile375       viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-sampler-mobile375        viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-b2b-mobile375            viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-wizard-mobile375         viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-contact-mobile375        viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-about-mobile375          viewport=375px, scrollWidth=375px, elements outside viewport=0 []
+PASS            RSP-home-tablet768           viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-shop-tablet768           viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-product-tablet768        viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-cart-tablet768           viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-checkout-tablet768       viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-sampler-tablet768        viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-b2b-tablet768            viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-wizard-tablet768         viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-contact-tablet768        viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-about-tablet768          viewport=768px, scrollWidth=768px, elements outside viewport=0 []
+PASS            RSP-home-desktop1440         viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-shop-desktop1440         viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-product-desktop1440      viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-cart-desktop1440         viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-checkout-desktop1440     viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-sampler-desktop1440      viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-b2b-desktop1440          viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-wizard-desktop1440       viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-contact-desktop1440      viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-about-desktop1440        viewport=1440px, scrollWidth=1440px, elements outside viewport=0 []
+PASS            RSP-home-reflow320           viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-shop-reflow320           viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-product-reflow320        viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-sampler-reflow320        viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-b2b-reflow320            viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-wizard-reflow320         viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-contact-reflow320        viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-about-reflow320          viewport=320px, scrollWidth=320px, elements outside viewport=0 []
+PASS            RSP-drawer-mobile375         drawer width=375px; modal left/right/bottom=[16, 359, 582]
+{
+ "label": "phase2",
+ "base": "http://localhost:4176",
+ "browser": "Chromium 141.0.7390.37 (Playwright, headless)",
+ "started": "2026-10-28T23:44:58+00:00",
+ "finished": "2026-10-28T23:46:22+00:00",
+ "total": 91,
+ "summary": {
+  "PASS": 88,
+  "EXPECTED FAIL (Phase 3)": 3
+ }
+}
